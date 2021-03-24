@@ -1,24 +1,29 @@
 import { StitchingInfo } from "@graphql-tools/delegate";
 import { Field, InputType, ID } from "@nestjs/graphql";
 import {MinLength, IsDateString, IsUUID} from 'class-validator';
+import { Record } from "./quiz.type";
+
 
 @InputType()
-export class CreateOpeningInputType {
-
-  @Field({ nullable: true })
-  pgn: string;
-  
-  @Field({ nullable: true })
-  fen: string;
+export class CreateQuizInputType {
 
   @Field()
   side: 'white' | 'black';
+  
+  @Field()
+  fenStart: string;
+
+  
 
   @Field()
-  turnStart: number;
+  listMoveCorrect: string[];
 
   @Field()
-  numberMove: number;
+  idUser: string;
+
+  @Field(type =>[Record])
+  record: Record[];
+  
 }
 
 // @IsUUID("4", {each:true})
@@ -31,7 +36,7 @@ export class CreateOpeningInputType {
 
 
 // @InputType()
-// export class AssignStudentsToOpeningInputType {
+// export class AssignStudentsToQuizInputType {
 //   @IsUUID()
 //   @Field(type=>ID)
 //   lessonId: string;

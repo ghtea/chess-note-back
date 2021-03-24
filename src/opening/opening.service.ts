@@ -11,22 +11,21 @@ export class OpeningService {
     @InjectRepository(OpeningEntity) private openingRepository: Repository<OpeningEntity>
   ) {}
 
-  async getOpenings(): Promise<OpeningEntity[]> {
+  // Query
+  async getListOpening(): Promise<OpeningEntity[]> {
     return this.openingRepository.find();
   }
 
-  async getOpening(id:string): Promise<OpeningEntity> {
+  async getOpeningById(id:string): Promise<OpeningEntity> {
     return this.openingRepository.findOne({id});
   }
 
   
-  async createOpening(createOpeningInput: CreateOpeningInputType): Promise<OpeningEntity> {
+  // Mutation
+  async createOpening(createOpeningInputType: CreateOpeningInputType): Promise<OpeningEntity> {
 
-    const {pgn, fen, side, turnStart, numberMove} = createOpeningInput;
+    const {pgn, fen, side, turnStart, numberMove} = createOpeningInputType;
 
-    
-
-    
     const opening = this.openingRepository.create({
       id: uuid(),
       pgn,
@@ -36,11 +35,8 @@ export class OpeningService {
       numberMove,
     });
 
-
-
     return this.openingRepository.save(opening);
   }
-
 
 
 }

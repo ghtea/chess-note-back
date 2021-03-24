@@ -12,29 +12,32 @@ export class OpeningResolver {
   
   constructor(
     private openingService: OpeningService,
-    private studentService: StudentService,
+    //private studentService: StudentService,
   ){}
+  
+
+  // Query 
+  @Query(returns => [OpeningType]) // graphQL 문법 주의!
+  getListOpening(){
+    console.log('hello')
+    return this.openingService.getListOpening();
+  }
 
   @Query(returns => OpeningType)
-  opening(
+  getOpeningById(
     @Args('id') id:string,
   ) {
-    return this.openingService.getOpening(id);
-  }
-
-  @Query(returns => [OpeningType]) // graphQL 문법 주의!
-  openings(){
-    console.log('hello')
-    return this.openingService.getOpenings();
+    return this.openingService.getOpeningById(id);
   }
 
 
 
+  // Mutation
   @Mutation(returns => OpeningType)
   createOpening(
-    @Args('createOpeningInput') createOpeningInput:CreateOpeningInputType,
+    @Args('createOpeningInputType') createOpeningInputType:CreateOpeningInputType,
   ) {
-    return this.openingService.createOpening(createOpeningInput);
+    return this.openingService.createOpening(createOpeningInputType);
   }
 
 

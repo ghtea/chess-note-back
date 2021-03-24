@@ -1,13 +1,14 @@
 import { Entity, PrimaryColumn, Column, ObjectIdColumn } from "typeorm";
 
 @Entity()
-export class OpeningEntity {
+export class QuizEntity {
   @ObjectIdColumn()
   _id: string;
 
   @PrimaryColumn()
   id: string;
 
+  //
   @Column()
   side: 'white' | 'black';
 
@@ -18,7 +19,10 @@ export class OpeningEntity {
   listMoveCorrect: string[];
 
   @Column()
-  numberMove: number; 
+  idUser: string;
+
+  @Column()
+  record: {date: string, result: boolean}[];
   
 }
 
