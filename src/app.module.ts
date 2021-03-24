@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 //import { MongooseModule } from '@nestjs/mongoose';
 import {GraphQLModule} from '@nestjs/graphql';
-import { LessonModule } from './lesson/lesson.module';
-import { Lesson } from './lesson/lesson.entity';
+import { OpeningModule } from './opening/opening.module';
+import { OpeningEntity } from './opening/opening.entity';
 import {Student} from './student/student.entity';
 import { ConfigModule } from '@nestjs/config';
 import { StudentModule } from './student/student.module';
@@ -17,7 +17,7 @@ import { StudentModule } from './student/student.module';
       synchronize: true,
       useUnifiedTopology: true,
       entities: [
-        Lesson,
+        OpeningEntity,
         Student
       ]
     }),
@@ -26,7 +26,7 @@ import { StudentModule } from './student/student.module';
       introspection: true,
       playground: true
     }),
-    LessonModule,
+    OpeningModule,
     StudentModule,
   ],
 })

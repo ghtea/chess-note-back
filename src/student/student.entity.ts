@@ -9,8 +9,18 @@ export class Student {
   id: string;
 
   @Column()
-  firstName: string;
+  pgn: string;
   
   @Column()
-  lastName: string;
+  fen: string;
+
+  @Column()
+  side: 'white' | 'black';
+
+  @Column()
+  turnStart: number;
+
+  @Column()
+  numberMoves: number;
+  
 }
