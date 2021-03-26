@@ -5,21 +5,21 @@ import {MinLength, IsDateString, IsUUID} from 'class-validator';
 @InputType()
 export class CreateOpeningInputType {
 
-  @Field({ nullable: true })
-  pgn: string;
-  
-  @Field({ nullable: true })
-  fen: string;
-
   @Field()
   side: 'white' | 'black';
 
   @Field()
-  turnStart: number;
+  name: string;
+
+  @Field(type=>[[String]])
+  listListMoveCorrect: string[][];
 
   @Field()
-  numberMove: number;
+  idUser: string;
 }
+
+// @Field({ nullable: true })
+//   fen: string;
 
 // @IsUUID("4", {each:true})
 // @Field(()=>[ID], { defaultValue: [] })

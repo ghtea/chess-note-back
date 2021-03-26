@@ -1,6 +1,9 @@
-import { Field, ObjectType, ID } from "@nestjs/graphql";
+import { Field, ObjectType, ID , Union} from "@nestjs/graphql";
 import { StudentType } from "src/student/student.type";
 
+
+// Union Media = Book | Movie
+// 어떻게 하는지 모르겠다
 
 @ObjectType('Record')
 export class Record {
@@ -24,8 +27,8 @@ export class QuizType {
   @Field()
   fenStart: string;
 
-  @Field()
-  listMoveCorrect: string[];
+  @Field(type=>[[String]])
+  listListMoveCorrect: string[][];
 
   @Field()
   idUser: string;

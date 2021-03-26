@@ -16,7 +16,7 @@ export class QuizEntity {
   fenStart: string;
 
   @Column()
-  listMoveCorrect: string[];
+  listListMoveCorrect: string[][];
 
   @Column()
   idUser: string;

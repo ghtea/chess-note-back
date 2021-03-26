@@ -19,7 +19,6 @@ export class QuizResolver {
   // Query 
   @Query(returns => [QuizType]) // graphQL 문법 주의!
   getListQuiz(){
-    console.log('hello')
     return this.quizService.getListQuiz();
   }
 

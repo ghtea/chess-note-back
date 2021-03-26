@@ -24,15 +24,15 @@ export class QuizService {
   // Mutation
   async createQuiz(createQuizInputType: CreateQuizInputType): Promise<QuizEntity> {
 
-    const {pgn, fen, side, turnStart, numberMove} = createQuizInputType;
+    const {side, fenStart, listListMoveCorrect, idUser} = createQuizInputType;
 
     const quiz = this.quizRepository.create({
       id: uuid(),
-      pgn,
-      fen, 
       side,
-      turnStart,
-      numberMove,
+      fenStart, 
+      listListMoveCorrect,
+      idUser,
+      record: []
     });
 
     return this.quizRepository.save(quiz);

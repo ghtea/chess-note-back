@@ -13,10 +13,8 @@ export class CreateQuizInputType {
   @Field()
   fenStart: string;
 
-  
-
-  @Field()
-  listMoveCorrect: string[];
+  @Field(type=>[[String]])
+  listListMoveCorrect: string[][];
 
   @Field()
   idUser: string;

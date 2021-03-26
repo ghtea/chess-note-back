@@ -8,19 +8,16 @@ export class OpeningType {
   id: string;
 
   @Field()
-  pgn: string;
-
-  @Field()
-  fen: string;
-
-  @Field()
   side: 'white' | 'black';
 
   @Field()
-  turnStart: number;
+  name: string;
+  
+  @Field(type=>[[String]])
+  listListMoveCorrect: string[][];
   
   @Field()
-  numberMove: number; 
+  idUser: string; 
 }
 
 

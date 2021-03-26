@@ -24,15 +24,14 @@ export class OpeningService {
   // Mutation
   async createOpening(createOpeningInputType: CreateOpeningInputType): Promise<OpeningEntity> {
 
-    const {pgn, fen, side, turnStart, numberMove} = createOpeningInputType;
+    const {side, name, listListMoveCorrect, idUser} = createOpeningInputType;
 
     const opening = this.openingRepository.create({
       id: uuid(),
-      pgn,
-      fen, 
       side,
-      turnStart,
-      numberMove,
+      name, 
+      listListMoveCorrect,
+      idUser,
     });
 
     return this.openingRepository.save(opening);

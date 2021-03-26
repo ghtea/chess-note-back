@@ -7,18 +7,17 @@ export class OpeningEntity {
 
   @PrimaryColumn()
   id: string;
-
+  
   @Column()
   side: 'white' | 'black';
 
   @Column()
-  fenStart: string;
+  name: string;
 
   @Column()
-  listMoveCorrect: string[];
+  listListMoveCorrect: string[][];
 
   @Column()
-  numberMove: number; 
-  
+  idUser: string;
 }
 
