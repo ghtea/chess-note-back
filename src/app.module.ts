@@ -7,6 +7,8 @@ import { OpeningEntity } from './opening/opening.entity';
 import {Student} from './student/student.entity';
 import { ConfigModule } from '@nestjs/config';
 import { StudentModule } from './student/student.module';
+import { QuizEntity } from './quiz/quiz.entity';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { StudentModule } from './student/student.module';
       useUnifiedTopology: true,
       entities: [
         OpeningEntity,
+        QuizEntity,
         Student
       ]
     }),
@@ -27,6 +30,7 @@ import { StudentModule } from './student/student.module';
       playground: true
     }),
     OpeningModule,
+    QuizModule,
     StudentModule,
   ],
 })

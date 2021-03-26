@@ -1,8 +1,16 @@
 import { StitchingInfo } from "@graphql-tools/delegate";
 import { Field, InputType, ID } from "@nestjs/graphql";
 import {MinLength, IsDateString, IsUUID} from 'class-validator';
-import { Record } from "./quiz.type";
 
+@InputType()
+export class RecordInputType {
+
+  @Field()
+  date: string;
+
+  @Field()
+  result: boolean;
+}
 
 @InputType()
 export class CreateQuizInputType {
@@ -19,8 +27,8 @@ export class CreateQuizInputType {
   @Field()
   idUser: string;
 
-  @Field(type =>[Record])
-  record: Record[];
+  @Field(type =>[RecordInputType])
+  record: RecordInputType[];
   
 }
 

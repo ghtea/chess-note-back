@@ -35,7 +35,7 @@ export class QuizService {
       record: []
     });
 
-    return this.quizRepository.save(quiz);
+    return this.quizRepository.save(quiz, {});
   }
 
 

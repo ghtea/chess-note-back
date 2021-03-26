@@ -6,7 +6,7 @@ import { StudentType } from "src/student/student.type";
 // 어떻게 하는지 모르겠다
 
 @ObjectType('Record')
-export class Record {
+export class RecordType {
 
   @Field()
   date: string;
@@ -14,6 +14,7 @@ export class Record {
   @Field()
   result: boolean;
 }
+
 
 @ObjectType('Quiz')
 export class QuizType {
@@ -33,8 +34,8 @@ export class QuizType {
   @Field()
   idUser: string;
   
-  @Field(type=>[Record])
-  listRecord: Record[];
+  @Field(type=>[RecordType])
+  listRecord: RecordType[];
 }
 
 
