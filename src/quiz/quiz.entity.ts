@@ -8,6 +8,9 @@ export class QuizEntity {
   @PrimaryColumn()
   id: string;
 
+  @Column()
+  name: string;
+
   //
   @Column()
   side: 'white' | 'black';
@@ -22,7 +25,13 @@ export class QuizEntity {
   idUser: string;
 
   @Column()
+  isPublic: boolean;
+
+  @Column()
   record: {date: string, result: boolean}[];
   
+  @Column()
+  dateCreated: number;
+
 }
 

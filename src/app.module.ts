@@ -27,7 +27,11 @@ import { QuizModule } from './quiz/quiz.module';
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       introspection: true,
-      playground: true
+      playground: true,
+      cors: {
+        credentials: true,
+        origin: true,
+      },
     }),
     OpeningModule,
     QuizModule,

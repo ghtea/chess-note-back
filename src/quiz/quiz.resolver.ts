@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/g
 import { stringify } from "node:querystring";
 import { StudentService } from "src/student/student.service";
 import { QuizEntity } from "./quiz.entity";
-import { CreateQuizInputType } from "./quiz.input-type";
+import { CreateQuizInputType, GetListQuizInputType } from "./quiz.input-type";
 import { QuizService } from "./quiz.service";
 import { QuizType } from "./quiz.type";
 
@@ -18,16 +18,25 @@ export class QuizResolver {
 
   // Query 
   @Query(returns => [QuizType]) // graphQL 문법 주의!
-  getListQuiz(){
-    return this.quizService.getListQuiz();
+  getListQuiz(
+    @Args('getListQuizInputType') getListQuizInputType:GetListQuizInputType,
+  ){
+    return this.quizService.getListQuiz(getListQuizInputType);
   }
 
-  @Query(returns => QuizType)
-  getQuizById(
-    @Args('id') id:string,
-  ) {
-    return this.quizService.getQuizById(id);
+  @Query(returns => [QuizType]) // graphQL 문법 주의!
+  getListQuizPublic(
+    
+  ){
+    return this.quizService.getListQuizPublic();
   }
+
+  // @Query(returns => QuizType)
+  // getQuizById(
+  //   @Args('id') id:string,
+  // ) {
+  //   return this.quizService.getQuizById(id);
+  // }
 
 
 
@@ -36,6 +45,7 @@ export class QuizResolver {
   createQuiz(
     @Args('createQuizInputType') createQuizInputType:CreateQuizInputType,
   ) {
+    //console.log('hello')
     return this.quizService.createQuiz(createQuizInputType);
   }
 

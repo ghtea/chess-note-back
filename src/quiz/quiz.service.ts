@@ -3,7 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {QuizEntity} from './quiz.entity';
 import {Repository} from 'typeorm';
 import {v4 as uuid} from 'uuid';
-import { CreateQuizInputType } from './quiz.input-type';
+import { CreateQuizInputType, GetListQuizInputType } from './quiz.input-type';
 
 @Injectable()
 export class QuizService {
@@ -12,8 +12,16 @@ export class QuizService {
   ) {}
 
   // Query
-  async getListQuiz(): Promise<QuizEntity[]> {
-    return this.quizRepository.find();
+  async getListQuiz(getListQuizInputType: GetListQuizInputType): Promise<QuizEntity[]> {
+    const {
+      idUser
+    } = getListQuizInputType
+    return this.quizRepository.find({idUser});
+  }
+
+  async getListQuizPublic(): Promise<QuizEntity[]> {
+    
+    return this.quizRepository.find({ isPublic: true });
   }
 
   async getQuizById(id:string): Promise<QuizEntity> {
@@ -23,19 +31,30 @@ export class QuizService {
   
   // Mutation
   async createQuiz(createQuizInputType: CreateQuizInputType): Promise<QuizEntity> {
-
-    const {side, fenStart, listListMoveCorrect, idUser} = createQuizInputType;
+    
+    const {name, side, fenStart, listListMoveCorrect, idUser, isPublic} = createQuizInputType;
 
     const quiz = this.quizRepository.create({
       id: uuid(),
+      name,
       side,
       fenStart, 
       listListMoveCorrect,
       idUser,
-      record: []
+      isPublic,
+      record: [],
+      dateCreated: Date.now(),
     });
+    
+    try { 
+      const result = await this.quizRepository.save(quiz, {});
+      return result;
+    }
+    catch(error){
 
-    return this.quizRepository.save(quiz, {});
+      console.log(error);
+      return;
+    }
   }
 
 

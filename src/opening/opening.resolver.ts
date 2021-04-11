@@ -19,7 +19,7 @@ export class OpeningResolver {
   // Query 
   @Query(returns => [OpeningType]) // graphQL 문법 주의!
   getListOpening(){
-    console.log('hello')
+    //console.log('hello')
     return this.openingService.getListOpening();
   }
 

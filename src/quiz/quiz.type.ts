@@ -23,6 +23,9 @@ export class QuizType {
   id: string;
 
   @Field()
+  name: string;
+
+  @Field()
   side: 'white' | 'black';
 
   @Field()
@@ -33,9 +36,15 @@ export class QuizType {
 
   @Field()
   idUser: string;
+
+  @Field()
+  isPublic: boolean;
   
   @Field(type=>[RecordType])
   listRecord: RecordType[];
+
+  @Field()
+  dateCreated: number;
 }
 
 

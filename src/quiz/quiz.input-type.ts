@@ -12,8 +12,25 @@ export class RecordInputType {
   result: boolean;
 }
 
+
+@InputType()
+export class GetListQuizInputType {
+  @Field()
+  idUser: string;
+}
+
+// @InputType()
+// export class GetListQuizPublicInputType {
+  
+// }
+
+
+
 @InputType()
 export class CreateQuizInputType {
+
+  @Field({ nullable: true })
+  name?: string;
 
   @Field()
   side: 'white' | 'black';
@@ -27,10 +44,13 @@ export class CreateQuizInputType {
   @Field()
   idUser: string;
 
-  @Field(type =>[RecordInputType])
-  record: RecordInputType[];
-  
+  @Field()
+  isPublic: boolean;
+
 }
+
+
+
 
 // @IsUUID("4", {each:true})
 // @Field(()=>[ID], { defaultValue: [] })
