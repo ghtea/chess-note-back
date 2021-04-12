@@ -3,12 +3,11 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import { OpeningResolver } from './opening.resolver';
 import { OpeningService } from './opening.service';
 import {OpeningEntity} from './opening.entity';
-import { StudentModule } from 'src/student/student.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([OpeningEntity]),
-    StudentModule,
+    //StudentModule,
   ],
   providers: [
     OpeningResolver,

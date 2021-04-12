@@ -28,9 +28,6 @@ export class QuizEntity {
   isPublic: boolean;
 
   @Column()
-  record: {date: string, result: boolean}[];
-  
-  @Column()
   dateCreated: number;
 
 }

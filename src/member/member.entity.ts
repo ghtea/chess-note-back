@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, ObjectIdColumn } from "typeorm";
 
 @Entity()
-export class Student {
+export class MemberEntity {
   @ObjectIdColumn()
   _id: string;
 
@@ -9,8 +9,10 @@ export class Student {
   id: string;
 
   @Column()
-  firstName: string;
-  
+  idUser: string;
+
   @Column()
-  lastName: string;
+  listRecordQuiz: { date: number, idQuiz: string, result: boolean }[];
+
 }
+

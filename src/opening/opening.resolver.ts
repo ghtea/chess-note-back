@@ -1,6 +1,5 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/graphql";
 import { stringify } from "node:querystring";
-import { StudentService } from "src/student/student.service";
 import { OpeningEntity } from "./opening.entity";
 import { CreateOpeningInputType } from "./opening.input-type";
 import { OpeningService } from "./opening.service";

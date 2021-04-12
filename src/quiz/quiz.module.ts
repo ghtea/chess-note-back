@@ -3,12 +3,12 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import { QuizResolver } from './quiz.resolver';
 import { QuizService } from './quiz.service';
 import {QuizEntity} from './quiz.entity';
-import { StudentModule } from 'src/student/student.module';
+import {MemberModule} from '../member/member.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([QuizEntity]),
-    StudentModule,
+    MemberModule,
   ],
   providers: [
     QuizResolver,

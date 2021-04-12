@@ -4,43 +4,31 @@ import { Field, ObjectType, ID , Union} from "@nestjs/graphql";
 // Union Media = Book | Movie
 // 어떻게 하는지 모르겠다
 
-// @ObjectType('Record')
-// export class RecordType {
+@ObjectType('RecordQuiz')
+export class RecordQuizType {
 
-//   @Field()
-//   date: string;
+  @Field()
+  date: number;
 
-//   @Field()
-//   result: boolean;
-// }
+  @Field()
+  idQuiz: string;
+  
+  @Field()
+  result: boolean;
+}
 
 
-@ObjectType('Quiz')
-export class QuizType {
+@ObjectType('Member')
+export class MemberType {
 
   @Field(type=>ID)
   id: string;
 
   @Field()
-  name: string;
-
-  @Field()
-  side: 'white' | 'black';
-
-  @Field()
-  fenStart: string;
-
-  @Field(type=>[[String]])
-  listListMoveCorrect: string[][];
-
-  @Field()
   idUser: string;
-
-  @Field()
-  isPublic: boolean;
   
-  @Field()
-  dateCreated: number;
+  @Field(type=>[RecordQuizType])
+  RecordQuizType: RecordQuizType[];
 }
 
 

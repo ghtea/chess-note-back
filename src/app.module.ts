@@ -4,11 +4,10 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import {GraphQLModule} from '@nestjs/graphql';
 import { OpeningModule } from './opening/opening.module';
 import { OpeningEntity } from './opening/opening.entity';
-import {Student} from './student/student.entity';
 import { ConfigModule } from '@nestjs/config';
-import { StudentModule } from './student/student.module';
 import { QuizEntity } from './quiz/quiz.entity';
 import { QuizModule } from './quiz/quiz.module';
+import { MemberEntity } from './member/member.entity';
 
 @Module({
   imports: [
@@ -19,9 +18,9 @@ import { QuizModule } from './quiz/quiz.module';
       synchronize: true,
       useUnifiedTopology: true,
       entities: [
+        MemberEntity,
         OpeningEntity,
         QuizEntity,
-        Student
       ]
     }),
     GraphQLModule.forRoot({
@@ -33,9 +32,9 @@ import { QuizModule } from './quiz/quiz.module';
         origin: true,
       },
     }),
+    MemberEntity,
     OpeningModule,
     QuizModule,
-    StudentModule,
   ],
 })
 export class AppModule {}

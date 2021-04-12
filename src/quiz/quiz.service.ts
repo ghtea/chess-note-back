@@ -3,7 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {QuizEntity} from './quiz.entity';
 import {Repository} from 'typeorm';
 import {v4 as uuid} from 'uuid';
-import { CreateQuizInputType, GetListQuizInputType } from './quiz.input-type';
+import { CreateQuizInputType, GetListQuizInputType, KindGetQuizRandom } from './quiz.input-type';
 
 @Injectable()
 export class QuizService {
@@ -28,6 +28,25 @@ export class QuizService {
     return this.quizRepository.findOne({id});
   }
 
+
+
+  async getQuizRandom(kind: KindGetQuizRandom, listRecordQuizOfUser?, idUser?): Promise<QuizEntity[]> {
+    if (kind === KindGetQuizRandom.myQuizByRecord){
+      
+    }
+    else if (kind === KindGetQuizRandom.publicQuizByRecord){
+      
+    }
+    else { // kind === KindGetQuizRandom.publicQuiz
+
+    }
+    return this.quizRepository.find({idUser});
+  }
+
+  
+
+
+
   
   // Mutation
   async createQuiz(createQuizInputType: CreateQuizInputType): Promise<QuizEntity> {
@@ -42,7 +61,6 @@ export class QuizService {
       listListMoveCorrect,
       idUser,
       isPublic,
-      record: [],
       dateCreated: Date.now(),
     });
     
