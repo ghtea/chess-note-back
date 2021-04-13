@@ -27,17 +27,15 @@ export class GetMemberByIdUserInputType {
   
 // }
 
-@InputType()
-export class GetQuizByIdInputType {
-  @Field()
-  id: string;
-}
+
 
 
 @InputType()
 export class CreateMemberInputType {
+  @Field()
   idUser: string;
 }
+
 
 
 

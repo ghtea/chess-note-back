@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import { QuizEntity } from './quiz/quiz.entity';
 import { QuizModule } from './quiz/quiz.module';
 import { MemberEntity } from './member/member.entity';
+import { MemberModule } from './member/member.module';
+
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { MemberEntity } from './member/member.entity';
         origin: true,
       },
     }),
-    MemberEntity,
+    MemberModule,
     OpeningModule,
     QuizModule,
   ],

@@ -1,8 +1,8 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/graphql";
-import { stringify } from "node:querystring";
+//import { stringify } from "node:querystring";
 import { MemberService } from "src/member/member.service";
 import { QuizEntity } from "./quiz.entity";
-import { CreateQuizInputType, GetListQuizInputType, GetQuizRandomInputType } from "./quiz.input-type";
+import { CreateQuizInputType, GetListQuizInputType, KindGetListQuiz } from "./quiz.input-type";
 import { QuizService } from "./quiz.service";
 import { QuizType } from "./quiz.type";
 
@@ -17,20 +17,6 @@ export class QuizResolver {
   
 
   // Query 
-  @Query(returns => [QuizType]) // graphQL 문법 주의!
-  getListQuiz(
-    @Args('getListQuizInputType') getListQuizInputType:GetListQuizInputType,
-  ){
-    return this.quizService.getListQuiz(getListQuizInputType);
-  }
-
-  @Query(returns => [QuizType]) // graphQL 문법 주의!
-  getListQuizPublic(
-    
-  ){
-    return this.quizService.getListQuizPublic();
-  }
-
   @Query(returns => QuizType)
   getQuizById(
     @Args('id') id:string,
@@ -40,26 +26,28 @@ export class QuizResolver {
 
 
 
-  @Query(returns => QuizType)
-  async getQuizRandom(
-    @Args('getQuizRandomInputType') getQuizRandomInputType:GetQuizRandomInputType,
+  @Query(returns => [QuizType])
+  async getListQuiz(
+    @Args('getListQuizInputType') getListQuizInputType:GetListQuizInputType,
   ) {
-    const {kind, idUser} = getQuizRandomInputType;
+    const {kind, idUser} = getListQuizInputType;
     // 3가지 경우
     // 1. 로그인 없이, 모든 퀴즈     'public-quiz' 
     // 2. 로그인 한채로, 모든 퀴즈 (자신의 퀴즈 푼 이력 이용)     'public-quiz-by-record'
     // 3. 로그인 한채로, 내 퀴즈만 (자신의 퀴즈 푼 이력 이용)     'my-quiz-by-record'
 
-    if (kind === 'my-quiz-by-record'){
-      const listRecordQuizOfUser = await this.memberService.getMemberByIdUser(idUser);
-      return this.quizService.getQuizRandom(kind, listRecordQuizOfUser, idUser);
+    if (kind === KindGetListQuiz.myQuizByRecord){
+      const result = await this.memberService.getMemberByIdUser(idUser);
+      const listRecordQuizOfUser = result.listRecordQuiz;
+      return this.quizService.getListQuiz({kind, listRecordQuizOfUser, idUser});
     }
-    else if (kind === 'public-quiz-by-record'){
-      const listRecordQuizOfUser = await this.memberService.getMemberByIdUser(idUser);
-      return this.quizService.getQuizRandom(kind, listRecordQuizOfUser);
+    else if (kind === KindGetListQuiz.publicQuizByRecord){
+      const result = await this.memberService.getMemberByIdUser(idUser);
+      const listRecordQuizOfUser = result.listRecordQuiz;
+      return this.quizService.getListQuiz({kind, listRecordQuizOfUser});
     }
-    else { // kind === '' public-quiz
-      return this.quizService.getQuizRandom(kind);
+    else { // kind === 
+      return this.quizService.getListQuiz({kind});
     }
     
   }

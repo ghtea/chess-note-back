@@ -3,7 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {QuizEntity} from './quiz.entity';
 import {Repository} from 'typeorm';
 import {v4 as uuid} from 'uuid';
-import { CreateQuizInputType, GetListQuizInputType, KindGetQuizRandom } from './quiz.input-type';
+import { CreateQuizInputType, GetListQuizInputType, KindGetListQuiz } from './quiz.input-type';
 
 @Injectable()
 export class QuizService {
@@ -12,35 +12,36 @@ export class QuizService {
   ) {}
 
   // Query
-  async getListQuiz(getListQuizInputType: GetListQuizInputType): Promise<QuizEntity[]> {
-    const {
-      idUser
-    } = getListQuizInputType
-    return this.quizRepository.find({idUser});
-  }
-
-  async getListQuizPublic(): Promise<QuizEntity[]> {
-    
-    return this.quizRepository.find({ isPublic: true });
-  }
-
   async getQuizById(id:string): Promise<QuizEntity> {
     return this.quizRepository.findOne({id});
   }
 
 
+  async getListQuiz(getListQuizInputType:GetListQuizInputType): Promise<QuizEntity[]> {
+    const {
+      kind, idUser, listRecordQuizOfUser,
+    } = getListQuizInputType;
 
-  async getQuizRandom(kind: KindGetQuizRandom, listRecordQuizOfUser?, idUser?): Promise<QuizEntity[]> {
-    if (kind === KindGetQuizRandom.myQuizByRecord){
-      
-    }
-    else if (kind === KindGetQuizRandom.publicQuizByRecord){
-      
-    }
-    else { // kind === KindGetQuizRandom.publicQuiz
+    if (kind === KindGetListQuiz.myQuizByRecord){
 
+      const result = await this.quizRepository.find({ idUser });
+      console.log(result);
+      console.log('1')
+      return result;
     }
-    return this.quizRepository.find({idUser});
+    else if (kind === KindGetListQuiz.publicQuizByRecord){
+      const result = await this.quizRepository.find({ isPublic: true });
+      console.log(result);
+      console.log('2')
+      return result;
+    }
+    else { // kind === KindGetListQuiz.publicQuiz
+      const result = await this.quizRepository.find({ isPublic: true });
+      console.log(result);
+      console.log('3')
+      return result;
+    }
+    
   }
 
   

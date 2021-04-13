@@ -14,28 +14,21 @@ export class RecordInputType {
 }
 
 
-@InputType()
-export class GetListQuizInputType {
-  @Field()
-  idUser: string;
-}
-
-
 
 // ['all-public', 'all-public-with-record', 'only-mine-with-record']
-export enum KindGetQuizRandom {
+export enum KindGetListQuiz {
   publicQuiz = 'public-quiz',
   publicQuizByRecord = 'public-quiz-by-record',
   myQuizByRecord = 'my-quiz-by-record',
 }
-registerEnumType(KindGetQuizRandom, { name: 'KindGetQuizRandom' });
+registerEnumType(KindGetListQuiz, { name: 'KindGetListQuiz' });
 
 
 @InputType()
-export class GetQuizRandomInputType {
+export class GetListQuizInputType {
 
-  @Field(()=>KindGetQuizRandom)
-  kind: KindGetQuizRandom;
+  @Field(()=>KindGetListQuiz)
+  kind: KindGetListQuiz;
 
   @Field(()=>[RecordQuizInputType], {nullable: true})
   listRecordQuizOfUser?: RecordQuizInputType[]
