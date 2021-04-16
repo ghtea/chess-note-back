@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/g
 //import { stringify } from "node:querystring";
 import { MemberService } from "src/member/member.service";
 import { QuizEntity } from "./quiz.entity";
-import { CreateQuizInputType, GetListQuizInputType, KindGetListQuiz } from "./quiz.input-type";
+import { CreateQuizInputType, GetListQuizInputType, GetQuizByIdInputType, KindGetListQuiz } from "./quiz.input-type";
 import { QuizService } from "./quiz.service";
 import { QuizType } from "./quiz.type";
 
@@ -19,9 +19,9 @@ export class QuizResolver {
   // Query 
   @Query(returns => QuizType)
   getQuizById(
-    @Args('id') id:string,
+    @Args('getQuizByIdInputType') getQuizByIdInputType:GetQuizByIdInputType,
   ) {
-    return this.quizService.getQuizById(id);
+    return this.quizService.getQuizById(getQuizByIdInputType);
   }
 
 
@@ -37,13 +37,13 @@ export class QuizResolver {
     // 3. 로그인 한채로, 내 퀴즈만 (자신의 퀴즈 푼 이력 이용)     'my-quiz-by-record'
 
     if (kind === KindGetListQuiz.myQuizByRecord){
-      const result = await this.memberService.getMemberByIdUser(idUser);
-      const listRecordQuizOfUser = result.listRecordQuiz;
+      const member = await this.memberService.getMemberByIdUser(idUser);
+      const listRecordQuizOfUser = member.listRecordQuiz;
       return this.quizService.getListQuiz({kind, listRecordQuizOfUser, idUser});
     }
     else if (kind === KindGetListQuiz.publicQuizByRecord){
-      const result = await this.memberService.getMemberByIdUser(idUser);
-      const listRecordQuizOfUser = result.listRecordQuiz;
+      const member = await this.memberService.getMemberByIdUser(idUser);
+      const listRecordQuizOfUser = member.listRecordQuiz;
       return this.quizService.getListQuiz({kind, listRecordQuizOfUser});
     }
     else { // kind === 

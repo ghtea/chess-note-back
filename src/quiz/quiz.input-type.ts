@@ -28,7 +28,7 @@ registerEnumType(KindGetListQuiz, { name: 'KindGetListQuiz' });
 export class GetListQuizInputType {
 
   @Field(()=>KindGetListQuiz)
-  kind: KindGetListQuiz;
+  kind: KindGetListQuiz ;
 
   @Field(()=>[RecordQuizInputType], {nullable: true})
   listRecordQuizOfUser?: RecordQuizInputType[]
@@ -37,10 +37,16 @@ export class GetListQuizInputType {
   idUser?: string;
 }
 
-// @InputType()
-// export class GetListQuizPublicInputType {
-  
-// }
+
+@InputType()
+export class GetQuizByIdInputType {
+
+  @Field()
+  id: string;
+
+  @Field({nullable: true})
+  idUser?: string;
+}
 
 
 @InputType()

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {QuizEntity} from './quiz.entity';
 import {Repository} from 'typeorm';
 import {v4 as uuid} from 'uuid';
-import { CreateQuizInputType, GetListQuizInputType, KindGetListQuiz } from './quiz.input-type';
+import { CreateQuizInputType, GetListQuizInputType, GetQuizByIdInputType, KindGetListQuiz } from './quiz.input-type';
+import _getListQuiz from './quiz.service/_getListQuiz';
 
 @Injectable()
 export class QuizService {
@@ -12,35 +13,31 @@ export class QuizService {
   ) {}
 
   // Query
-  async getQuizById(id:string): Promise<QuizEntity> {
-    return this.quizRepository.findOne({id});
+  async getQuizById(getQuizByIdInputType:GetQuizByIdInputType): Promise<QuizEntity> {
+    const {id, idUser} = getQuizByIdInputType;
+
+    const result = await this.quizRepository.findOne({id});
+    
+    if (result.isPublic){
+      return result;
+    }
+    else if (result.idUser === idUser){
+      return result;
+    }
+    else {
+
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'This quiz is not public and the user is not owner of this quiz',
+      }, HttpStatus.FORBIDDEN);
+      
+    }
   }
 
 
   async getListQuiz(getListQuizInputType:GetListQuizInputType): Promise<QuizEntity[]> {
-    const {
-      kind, idUser, listRecordQuizOfUser,
-    } = getListQuizInputType;
 
-    if (kind === KindGetListQuiz.myQuizByRecord){
-
-      const result = await this.quizRepository.find({ idUser });
-      console.log(result);
-      console.log('1')
-      return result;
-    }
-    else if (kind === KindGetListQuiz.publicQuizByRecord){
-      const result = await this.quizRepository.find({ isPublic: true });
-      console.log(result);
-      console.log('2')
-      return result;
-    }
-    else { // kind === KindGetListQuiz.publicQuiz
-      const result = await this.quizRepository.find({ isPublic: true });
-      console.log(result);
-      console.log('3')
-      return result;
-    }
+    return _getListQuiz(getListQuizInputType, this.quizRepository);
     
   }
 
