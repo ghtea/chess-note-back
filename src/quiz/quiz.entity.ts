@@ -1,5 +1,11 @@
 import { Entity, PrimaryColumn, Column, ObjectIdColumn } from "typeorm";
 
+
+// export type Memo = {
+//   seriesSan: string[];
+//   kind: string;
+// }
+
 @Entity()
 export class QuizEntity {
   @ObjectIdColumn()
@@ -13,13 +19,16 @@ export class QuizEntity {
 
   //
   @Column()
-  side: 'white' | 'black';
+  turnNext: 'white' | 'black';
 
   @Column()
   fenStart: string;
 
   @Column()
-  listListMoveCorrect: string[][];
+  listSeriesSanCorrect: string[][];
+
+  @Column()
+  listSeriesSanMention: string[][];
 
   @Column()
   idUser: string;
@@ -29,6 +38,9 @@ export class QuizEntity {
 
   @Column()
   dateCreated: number;
+
+  @Column()
+  dateUpdated: number;
 
 }
 

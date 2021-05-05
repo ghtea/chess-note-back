@@ -3,7 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {OpeningEntity} from './opening.entity';
 import {Repository} from 'typeorm';
 import {v4 as uuid} from 'uuid';
-import { CreateOpeningInputType } from './opening.input-type';
+import { CreateOpeningInputType, GetListOpeningInputType } from './opening.input-type';
 
 @Injectable()
 export class OpeningService {
@@ -12,26 +12,41 @@ export class OpeningService {
   ) {}
 
   // Query
-  async getListOpening(): Promise<OpeningEntity[]> {
-    return this.openingRepository.find();
+  async getListOpening(
+    getListOpeningInputType: GetListOpeningInputType
+    ): Promise<OpeningEntity[]> {
+    
+    const {isPublic, idUser} = getListOpeningInputType;
+
+    if (isPublic){
+      return this.openingRepository.find({isPublic: true});
+    }
+    else {
+      return this.openingRepository.find({idUser: idUser});
+    }
   }
 
+  
   async getOpeningById(id:string): Promise<OpeningEntity> {
     return this.openingRepository.findOne({id});
   }
+
 
   
   // Mutation
   async createOpening(createOpeningInputType: CreateOpeningInputType): Promise<OpeningEntity> {
 
-    const {side, name, listListMoveCorrect, idUser} = createOpeningInputType;
+    const {side, name, tree, idUser, isPublic} = createOpeningInputType;
 
     const opening = this.openingRepository.create({
       id: uuid(),
       side,
       name, 
-      listListMoveCorrect,
+      tree,
       idUser,
+      isPublic,
+      dateCreated: Date.now(),
+      dateUpdated: Date.now(),
     });
 
     return this.openingRepository.save(opening);

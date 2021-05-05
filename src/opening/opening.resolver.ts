@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/graphql";
 import { stringify } from "node:querystring";
 import { OpeningEntity } from "./opening.entity";
-import { CreateOpeningInputType } from "./opening.input-type";
+import { CreateOpeningInputType, GetListOpeningInputType } from "./opening.input-type";
 import { OpeningService } from "./opening.service";
 import { OpeningType } from "./opening.type";
 
@@ -17,11 +17,15 @@ export class OpeningResolver {
 
   // Query 
   @Query(returns => [OpeningType]) // graphQL 문법 주의!
-  getListOpening(){
-    //console.log('hello')
-    return this.openingService.getListOpening();
+  getListOpening(
+    @Args('getListOpeningInputType') getListOpeningInputType:GetListOpeningInputType,
+  ){
+    return this.openingService.getListOpening(getListOpeningInputType);
+
   }
 
+
+  
   @Query(returns => OpeningType)
   getOpeningById(
     @Args('id') id:string,

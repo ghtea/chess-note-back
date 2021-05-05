@@ -3,8 +3,8 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {QuizEntity} from './quiz.entity';
 import {Repository} from 'typeorm';
 import {v4 as uuid} from 'uuid';
-import { CreateQuizInputType, GetListQuizInputType, GetQuizByIdInputType, KindGetListQuiz } from './quiz.input-type';
-import _getListQuiz from './quiz.service/_getListQuiz';
+import { CreateQuizInputType, GetFocusListQuizInputType, GetListQuizInputType, GetQuizByIdInputType, KindGetFocusListQuiz, UpdateQuizInputType } from './quiz.input-type';
+import _getFocusListQuiz from './quiz.service/_getFocusListQuiz';
 
 @Injectable()
 export class QuizService {
@@ -13,6 +13,21 @@ export class QuizService {
   ) {}
 
   // Query
+  async getListQuiz(getListQuizInputType:GetListQuizInputType): Promise<QuizEntity[]> {
+    const {idUser} = getListQuizInputType;
+    let result: QuizEntity[] = []
+    if (idUser){
+      result = await this.quizRepository.find({ idUser });
+    }
+    else {
+      result = await this.quizRepository.find({ isPublic: true });
+    }
+    
+    return result;
+  }
+
+
+
   async getQuizById(getQuizByIdInputType:GetQuizByIdInputType): Promise<QuizEntity> {
     const {id, idUser} = getQuizByIdInputType;
 
@@ -35,9 +50,9 @@ export class QuizService {
   }
 
 
-  async getListQuiz(getListQuizInputType:GetListQuizInputType): Promise<QuizEntity[]> {
+  async getFocusListQuiz(getFocusListQuizInputType:GetFocusListQuizInputType): Promise<QuizEntity[]> {
 
-    return _getListQuiz(getListQuizInputType, this.quizRepository);
+    return _getFocusListQuiz(getFocusListQuizInputType, this.quizRepository);
     
   }
 
@@ -49,22 +64,57 @@ export class QuizService {
   // Mutation
   async createQuiz(createQuizInputType: CreateQuizInputType): Promise<QuizEntity> {
     
-    const {name, side, fenStart, listListMoveCorrect, idUser, isPublic} = createQuizInputType;
+    const {name, turnNext, fenStart, listSeriesSanCorrect, listSeriesSanMention, idUser, isPublic} = createQuizInputType;
 
     const quiz = this.quizRepository.create({
       id: uuid(),
       name,
-      side,
+      turnNext,
       fenStart, 
-      listListMoveCorrect,
+      listSeriesSanCorrect,
+      listSeriesSanMention,
       idUser,
       isPublic,
       dateCreated: Date.now(),
+      dateUpdated: Date.now(),
     });
     
     try { 
       const result = await this.quizRepository.save(quiz, {});
       return result;
+    }
+    catch(error){
+
+      console.log(error);
+      return;
+    }
+  }
+
+
+
+  async updateQuiz(updateQuizInputType: UpdateQuizInputType): Promise<QuizEntity> {
+    
+    const {id, name, turnNext, fenStart, listSeriesSanCorrect, listSeriesSanMention, isPublic} = updateQuizInputType;
+
+    
+    try { 
+      let quizToUpdate = await this.quizRepository.findOne(id);
+
+      if (quizToUpdate){
+        const result = await this.quizRepository.save({
+          ...quizToUpdate, 
+          ...updateQuizInputType,
+          dateUpdated: Date.now(),
+        });
+        return result;
+      }
+      else {
+        throw new HttpException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'There is no quiz with that id',
+        }, HttpStatus.NOT_FOUND);
+      }
+
     }
     catch(error){
 

@@ -7,16 +7,25 @@ export class OpeningType {
   id: string;
 
   @Field()
-  side: 'white' | 'black';
+  name: string;
 
   @Field()
-  name: string;
+  side: 'white' | 'black';
   
-  @Field(type=>[[String]])
-  listListMoveCorrect: string[][];
+  @Field()
+  tree: string;
   
   @Field()
   idUser: string; 
+
+  @Field()
+  isPublic: boolean;
+  
+  @Field()
+  dateCreated: number;
+
+  @Field()
+  dateUpdated: number;
 }
 
 

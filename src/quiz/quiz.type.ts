@@ -1,17 +1,18 @@
 import { Field, ObjectType, ID , Union} from "@nestjs/graphql";
+//import { Memo } from "./quiz.entity";
 
 
 // Union Media = Book | Movie
 // 어떻게 하는지 모르겠다
 
-// @ObjectType('Record')
-// export class RecordType {
+// @ObjectType('Memo')
+// export class MemoType {
 
 //   @Field()
-//   date: string;
+//   seriesSan: string;
 
 //   @Field()
-//   result: boolean;
+//   content: string;
 // }
 
 
@@ -25,13 +26,16 @@ export class QuizType {
   name: string;
 
   @Field()
-  side: 'white' | 'black';
+  turnNext: 'white' | 'black';
 
   @Field()
   fenStart: string;
 
   @Field(type=>[[String]])
-  listListMoveCorrect: string[][];
+  listSeriesSanCorrect: string[][];
+
+  @Field(type=>[[String]])
+  listSeriesSanMention: string[][];
 
   @Field()
   idUser: string;
@@ -41,8 +45,22 @@ export class QuizType {
   
   @Field()
   dateCreated: number;
+
+  @Field()
+  dateUpdated: number;
 }
 
+
+
+@ObjectType('DictListQuiz')
+export class DictListQuizType {
+
+  @Field(type=>[QuizType])
+  listPublicQuiz: QuizType[]
+
+  @Field(type=>[QuizType])
+  listMyQuiz: QuizType[]
+}
 
 // @Field(type=>[StudentType]) 
 //   // 반환할 때 student 의 아이디를 통해서 student 자체를 반환한다!!! 이걸로 호출을 한번해서 두번한 효과를 낸다!

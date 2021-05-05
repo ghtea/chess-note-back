@@ -1,10 +1,10 @@
 import { Repository } from "typeorm";
 import { QuizEntity } from "../quiz.entity";
-import { GetListQuizInputType, KindGetListQuiz } from "../quiz.input-type";
+import { GetFocusListQuizInputType, KindGetFocusListQuiz } from "../quiz.input-type";
 
 
-async function _getListQuiz(
-  getListQuizInputType:GetListQuizInputType,
+async function _getFocusListQuiz(
+  getListQuizInputType:GetFocusListQuizInputType,
   quizRepository: Repository<QuizEntity>,
 ): Promise<QuizEntity[]> {
   
@@ -13,12 +13,12 @@ async function _getListQuiz(
   } = getListQuizInputType;
 
 
-  const listIdQuizInRecordFailedSorted = listRecordQuizOfUser
+  const listIdQuizInRecordFailedSorted = listRecordQuizOfUser || []
     .filter(e=>e.result === false)
     .sort((a,b)=> a.date - b.date) // 더 옛날일수록 앞에
     .map(e=>e.idQuiz);
 
-  const listIdQuizInRecordSolvedSorted = listRecordQuizOfUser
+  const listIdQuizInRecordSolvedSorted = listRecordQuizOfUser || []
     .filter(e=>e.result === true)
     .sort((a,b)=> a.date - b.date) // 더 옛날일수록 앞에
     .map(e=>e.idQuiz);
@@ -27,7 +27,7 @@ async function _getListQuiz(
   const listIdQuizInRecordSorted = [...listIdQuizInRecordFailedSorted, ...listIdQuizInRecordSolvedSorted ]
 
   
-  if (kind === KindGetListQuiz.myQuizByRecord){
+  if (kind === KindGetFocusListQuiz.myQuizByRecord){
     // 내 퀴즈들중  A(아직 시도해보지 않은 것들) + B(전에 틀린 것들 + 전에 맞은 것들)
 
     const result = await quizRepository.find({ idUser });
@@ -51,7 +51,7 @@ async function _getListQuiz(
   }
 
 
-  else if (kind === KindGetListQuiz.publicQuizByRecord){
+  else if (kind === KindGetFocusListQuiz.publicQuizByRecord){
     // 전체 공개 퀴즈들중  A(아직 시도해보지 않은 것들) + B(전에 틀린 것들 + 전에 맞은 것들)
     const result = await quizRepository.find({ isPublic: true });
     
@@ -82,4 +82,4 @@ async function _getListQuiz(
 }
 
 
-export default _getListQuiz
+export default _getFocusListQuiz

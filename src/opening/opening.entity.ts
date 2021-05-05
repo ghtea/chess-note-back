@@ -7,17 +7,26 @@ export class OpeningEntity {
 
   @PrimaryColumn()
   id: string;
+
+  @Column()
+  name: string;
   
   @Column()
   side: 'white' | 'black';
 
   @Column()
-  name: string;
-
-  @Column()
-  listListMoveCorrect: string[][];
+  tree: string;
 
   @Column()
   idUser: string;
+
+  @Column()
+  isPublic: boolean;
+
+  @Column()
+  dateCreated: number;
+
+  @Column()
+  dateUpdated: number;
 }
 

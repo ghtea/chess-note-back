@@ -3,36 +3,10 @@ import { Field, InputType, ID, createUnionType, registerEnumType } from "@nestjs
 import {MinLength, IsDateString, IsUUID} from 'class-validator';
 import { RecordQuizInputType } from "src/member/member.input-type";
 
-@InputType()
-export class RecordInputType {
-
-  @Field()
-  date: string;
-
-  @Field()
-  result: boolean;
-}
-
-
-
-// ['all-public', 'all-public-with-record', 'only-mine-with-record']
-export enum KindGetListQuiz {
-  publicQuiz = 'public-quiz',
-  publicQuizByRecord = 'public-quiz-by-record',
-  myQuizByRecord = 'my-quiz-by-record',
-}
-registerEnumType(KindGetListQuiz, { name: 'KindGetListQuiz' });
 
 
 @InputType()
 export class GetListQuizInputType {
-
-  @Field(()=>KindGetListQuiz)
-  kind: KindGetListQuiz ;
-
-  @Field(()=>[RecordQuizInputType], {nullable: true})
-  listRecordQuizOfUser?: RecordQuizInputType[]
-
   @Field({nullable: true})
   idUser?: string;
 }
@@ -50,19 +24,66 @@ export class GetQuizByIdInputType {
 
 
 @InputType()
+export class GetDictListQuizInputType {
+  @Field({nullable: true})
+  idUser?: string;
+}
+
+// @InputType()
+// export class MemoInputType {
+
+//   @Field()
+//   seriesSan: string;
+
+//   @Field()
+//   content: string;
+// }
+
+
+
+// ['all-public', 'all-public-with-record', 'only-mine-with-record']
+export enum KindGetFocusListQuiz {
+  publicQuiz = 'public-quiz',
+  publicQuizByRecord = 'public-quiz-by-record',
+  myQuizByRecord = 'my-quiz-by-record',
+}
+registerEnumType(KindGetFocusListQuiz, { name: 'KindGetFocusListQuiz' });
+
+
+@InputType()
+export class GetFocusListQuizInputType {
+
+  @Field(()=>KindGetFocusListQuiz)
+  kind: KindGetFocusListQuiz ;
+
+  @Field(()=>[RecordQuizInputType], {nullable: true})
+  listRecordQuizOfUser?: RecordQuizInputType[]
+
+  @Field({nullable: true})
+  idUser?: string;
+}
+
+
+
+
+
+@InputType()
 export class CreateQuizInputType {
 
   @Field({ nullable: true })
   name?: string;
 
   @Field()
-  side: 'white' | 'black';
+  turnNext: 'white' | 'black';
   
   @Field()
   fenStart: string;
 
   @Field(type=>[[String]])
-  listListMoveCorrect: string[][];
+  listSeriesSanCorrect: string[][];
+
+  @Field(type=>[[String]])
+  listSeriesSanMention: string[][];
 
   @Field()
   idUser: string;
@@ -74,6 +95,40 @@ export class CreateQuizInputType {
 
 
 
+
+@InputType()
+export class UpdateQuizInputType {
+
+  @Field(type=>ID)
+  id: string;
+
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field()
+  turnNext: 'white' | 'black';
+  
+  @Field()
+  fenStart: string;
+
+  @Field(type=>[[String]])
+  listSeriesSanCorrect: string[][];
+
+  @Field(type=>[[String]])
+  listSeriesSanMention: string[][];
+  
+
+  // @Field()
+  // idUser: string;
+
+  @Field()
+  isPublic: boolean;
+
+}
+
+
+// @Field(type=>[MemoInputType])
+  // listMemo: Memo[];
 
 // @IsUUID("4", {each:true})
 // @Field(()=>[ID], { defaultValue: [] })
