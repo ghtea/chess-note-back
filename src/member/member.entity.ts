@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ObjectIdColumn } from "typeorm";
+import { Entity, PrimaryColumn, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity()
 export class MemberEntity {
@@ -9,10 +9,8 @@ export class MemberEntity {
   id: string;
 
   @Column()
-  idUser: string;
+  userId: string;
 
   @Column()
-  listRecordQuiz: { date: number, idQuiz: string, result: boolean }[];
-
+  quizRecordList: { date: number; idQuiz: string; result: boolean }[];
 }
-

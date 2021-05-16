@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 //import { MongooseModule } from '@nestjs/mongoose';
-import {GraphQLModule} from '@nestjs/graphql';
+import { GraphQLModule } from '@nestjs/graphql';
 import { OpeningModule } from './opening/opening.module';
 import { OpeningEntity } from './opening/opening.entity';
 import { ConfigModule } from '@nestjs/config';
@@ -9,7 +9,6 @@ import { QuizEntity } from './quiz/quiz.entity';
 import { QuizModule } from './quiz/quiz.module';
 import { MemberEntity } from './member/member.entity';
 import { MemberModule } from './member/member.module';
-
 
 @Module({
   imports: [
@@ -19,11 +18,7 @@ import { MemberModule } from './member/member.module';
       url: process.env.URL_DB,
       synchronize: true,
       useUnifiedTopology: true,
-      entities: [
-        MemberEntity,
-        OpeningEntity,
-        QuizEntity,
-      ]
+      entities: [MemberEntity, OpeningEntity, QuizEntity],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
@@ -40,7 +35,6 @@ import { MemberModule } from './member/member.module';
   ],
 })
 export class AppModule {}
-
 
 /*
 // 배포 후에도 playground 가능하게 하려면

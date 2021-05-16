@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ObjectIdColumn } from "typeorm";
+import { Entity, PrimaryColumn, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity()
 export class OpeningEntity {
@@ -10,7 +10,7 @@ export class OpeningEntity {
 
   @Column()
   name: string;
-  
+
   @Column()
   side: 'white' | 'black';
 
@@ -18,15 +18,14 @@ export class OpeningEntity {
   tree: string;
 
   @Column()
-  idUser: string;
+  userId: string;
 
   @Column()
   isPublic: boolean;
 
   @Column()
-  dateCreated: number;
+  createdDate: number;
 
   @Column()
-  dateUpdated: number;
+  updatedDate: number;
 }
-

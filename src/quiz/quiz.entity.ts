@@ -1,5 +1,4 @@
-import { Entity, PrimaryColumn, Column, ObjectIdColumn } from "typeorm";
-
+import { Entity, PrimaryColumn, Column, ObjectIdColumn } from 'typeorm';
 
 // export type Memo = {
 //   seriesSan: string[];
@@ -19,28 +18,26 @@ export class QuizEntity {
 
   //
   @Column()
-  turnNext: 'white' | 'black';
+  nextTurn: 'white' | 'black';
 
   @Column()
-  fenStart: string;
+  startingFen: string;
 
   @Column()
-  listSeriesSanCorrect: string[][];
+  correctSanSeriesList: string[][];
 
   @Column()
-  listSeriesSanMention: string[][];
+  markedSanSeriesList: string[][];
 
   @Column()
-  idUser: string;
+  userId: string;
 
   @Column()
   isPublic: boolean;
 
   @Column()
-  dateCreated: number;
+  createdDate: number;
 
   @Column()
-  dateUpdated: number;
-
+  updatedDate: number;
 }
-

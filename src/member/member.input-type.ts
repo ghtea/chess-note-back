@@ -1,45 +1,36 @@
-import { StitchingInfo } from "@graphql-tools/delegate";
-import { Field, InputType, ID } from "@nestjs/graphql";
-import {MinLength, IsDateString, IsUUID} from 'class-validator';
+import { StitchingInfo } from '@graphql-tools/delegate';
+import { Field, InputType, ID } from '@nestjs/graphql';
+import { MinLength, IsDateString, IsUUID } from 'class-validator';
 
 @InputType()
 export class RecordQuizInputType {
-
   @Field()
   date: number;
 
   @Field()
   idQuiz: string;
-  
+
   @Field()
   result: boolean;
 }
 
-
 @InputType()
-export class GetMemberByIdUserInputType {
+export class GetMemberByuserIdInputType {
   @Field()
-  idUser: string;
+  userId: string;
 }
 
 // @InputType()
 // export class GetListQuizPublicInputType {
-  
+
 // }
-
-
-
 
 @InputType()
 export class CreateMemberInputType {
   @Field()
-  idUser: string;
+  userId: string;
 }
 
-
-
-
-
 // @IsUUID("4", {each:true})
 // @Field(()=>[ID], { defaultValue: [] })
 // students: string[];
@@ -47,7 +38,6 @@ export class CreateMemberInputType {
 // @IsUUID("4", {each:true})
 // @Field(()=>[ID], { defaultValue: [] })
 // students: string[];
-
 
 // @InputType()
 // export class AssignStudentsToQuizInputType {
