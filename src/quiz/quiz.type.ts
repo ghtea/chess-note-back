@@ -47,8 +47,8 @@ export class QuizType {
   updatedDate: number;
 }
 
-@ObjectType('DictListQuiz')
-export class DictListQuizType {
+@ObjectType('QuizListDict')
+export class QuizListDictType {
   @Field((type) => [QuizType])
   publicQuizList: QuizType[];
 

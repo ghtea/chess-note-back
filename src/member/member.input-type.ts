@@ -3,25 +3,25 @@ import { Field, InputType, ID } from '@nestjs/graphql';
 import { MinLength, IsDateString, IsUUID } from 'class-validator';
 
 @InputType()
-export class RecordQuizInputType {
-  @Field()
+export class QuizRecordInputType {
+  @Field(() => Number)
   date: number;
 
-  @Field()
-  idQuiz: string;
+  @Field(() => String)
+  quizId: string;
 
-  @Field()
+  @Field(() => Boolean)
   result: boolean;
 }
 
 @InputType()
-export class GetMemberByuserIdInputType {
+export class GetMemberByUserIdInputType {
   @Field()
   userId: string;
 }
 
 // @InputType()
-// export class GetListQuizPublicInputType {
+// export class getQuizListPublicInputType {
 
 // }
 
@@ -29,6 +29,15 @@ export class GetMemberByuserIdInputType {
 export class CreateMemberInputType {
   @Field()
   userId: string;
+}
+
+@InputType()
+export class UpdateMemberInputType {
+  @Field(() => String)
+  userId: string;
+
+  @Field(() => [QuizRecordInputType])
+  quizRecordList: QuizRecordInputType[];
 }
 
 // @IsUUID("4", {each:true})

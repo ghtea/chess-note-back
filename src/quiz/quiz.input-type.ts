@@ -7,10 +7,10 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { MinLength, IsDateString, IsUUID } from 'class-validator';
-import { RecordQuizInputType } from 'src/member/member.input-type';
+// import { QuizRecordInputType } from 'src/member/member.input-type';
 
 @InputType()
-export class GetListQuizInputType {
+export class getQuizListInputType {
   @Field({ nullable: true })
   userId?: string;
 }
@@ -25,7 +25,7 @@ export class GetQuizByIdInputType {
 }
 
 @InputType()
-export class GetDictListQuizInputType {
+export class GetQuizListDictInputType {
   @Field({ nullable: true })
   userId?: string;
 }
@@ -39,26 +39,6 @@ export class GetDictListQuizInputType {
 //   @Field()
 //   content: string;
 // }
-
-// ['all-public', 'all-public-with-record', 'only-mine-with-record']
-export enum KindGetFocusListQuiz {
-  publicQuiz = 'public-quiz',
-  publicQuizByRecord = 'public-quiz-by-record',
-  myQuizByRecord = 'my-quiz-by-record',
-}
-registerEnumType(KindGetFocusListQuiz, { name: 'KindGetFocusListQuiz' });
-
-@InputType()
-export class GetFocusListQuizInputType {
-  @Field(() => KindGetFocusListQuiz)
-  kind: KindGetFocusListQuiz;
-
-  @Field(() => [RecordQuizInputType], { nullable: true })
-  quizRecordListOfUser?: RecordQuizInputType[];
-
-  @Field({ nullable: true })
-  userId?: string;
-}
 
 @InputType()
 export class CreateQuizInputType {

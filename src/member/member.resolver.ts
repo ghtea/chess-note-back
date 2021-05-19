@@ -8,7 +8,11 @@ import {
 } from '@nestjs/graphql';
 import { stringify } from 'node:querystring';
 import { MemberEntity } from './member.entity';
-import { CreateMemberInputType } from './member.input-type';
+import {
+  CreateMemberInputType,
+  GetMemberByUserIdInputType,
+  UpdateMemberInputType,
+} from './member.input-type';
 import { MemberService } from './member.service';
 import { MemberType } from './member.type';
 
@@ -19,8 +23,18 @@ export class MemberResolver {
   ) {}
 
   @Query((returns) => MemberType)
-  getMemberByuserId(@Args('id') userId: string) {
-    return this.memberService.getMemberByuserId(userId);
+  async getMemberByUserId(
+    @Args('getMemberByUserIdInputType')
+    getMemberByUserIdInputType: GetMemberByUserIdInputType,
+  ) {
+    const { userId } = getMemberByUserIdInputType;
+    const member = await this.memberService.getMemberByUserId(userId);
+
+    if (member) {
+      return this.memberService.getMemberByUserId(userId);
+    } else {
+      return this.memberService.createMember({ userId });
+    }
   }
 
   // Mutation
@@ -30,6 +44,20 @@ export class MemberResolver {
   ) {
     //console.log('hello')
     return this.memberService.createMember(createMemberInputType);
+  }
+
+  @Mutation((returns) => MemberType)
+  async updateMember(
+    @Args('updateMemberInputType') updateMemberInputType: UpdateMemberInputType,
+  ) {
+    const { userId } = updateMemberInputType;
+    const member = await this.memberService.getMemberByUserId(userId);
+
+    if (member) {
+      return this.memberService.updateMember(updateMemberInputType);
+    } else {
+      return this.memberService.createMember({ userId });
+    }
   }
 }
 

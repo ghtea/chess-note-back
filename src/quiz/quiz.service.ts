@@ -5,13 +5,10 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   CreateQuizInputType,
-  GetFocusListQuizInputType,
-  GetListQuizInputType,
+  getQuizListInputType,
   GetQuizByIdInputType,
-  KindGetFocusListQuiz,
   UpdateQuizInputType,
 } from './quiz.input-type';
-import _getFocusListQuiz from './quiz.service/_getFocusListQuiz';
 
 @Injectable()
 export class QuizService {
@@ -21,10 +18,10 @@ export class QuizService {
   ) {}
 
   // Query
-  async getListQuiz(
-    getListQuizInputType: GetListQuizInputType,
+  async getQuizList(
+    getQuizListInputType: getQuizListInputType,
   ): Promise<QuizEntity[]> {
-    const { userId } = getListQuizInputType;
+    const { userId } = getQuizListInputType;
     let result: QuizEntity[] = [];
     if (userId) {
       result = await this.quizRepository.find({ userId });
@@ -56,12 +53,6 @@ export class QuizService {
         HttpStatus.FORBIDDEN,
       );
     }
-  }
-
-  async getFocusListQuiz(
-    getFocusListQuizInputType: GetFocusListQuizInputType,
-  ): Promise<QuizEntity[]> {
-    return _getFocusListQuiz(getFocusListQuizInputType, this.quizRepository);
   }
 
   // Mutation

@@ -3,13 +3,13 @@ import { Field, ObjectType, ID, Union } from '@nestjs/graphql';
 // Union Media = Book | Movie
 // 어떻게 하는지 모르겠다
 
-@ObjectType('RecordQuiz')
-export class RecordQuizType {
+@ObjectType('QuizRecord')
+export class QuizRecordType {
   @Field()
   date: number;
 
   @Field()
-  idQuiz: string;
+  quizId: string;
 
   @Field()
   result: boolean;
@@ -23,8 +23,8 @@ export class MemberType {
   @Field()
   userId: string;
 
-  @Field((type) => [RecordQuizType])
-  RecordQuizType: RecordQuizType[];
+  @Field((type) => [QuizRecordType])
+  quizRecordList: QuizRecordType[];
 }
 
 // @Field(type=>[StudentType])

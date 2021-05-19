@@ -1,5 +1,7 @@
 import { Entity, PrimaryColumn, Column, ObjectIdColumn } from 'typeorm';
 
+export type QuizRecord = { date: number; quizId: string; result: boolean };
+
 @Entity()
 export class MemberEntity {
   @ObjectIdColumn()
@@ -12,5 +14,5 @@ export class MemberEntity {
   userId: string;
 
   @Column()
-  quizRecordList: { date: number; idQuiz: string; result: boolean }[];
+  quizRecordList: QuizRecord[];
 }

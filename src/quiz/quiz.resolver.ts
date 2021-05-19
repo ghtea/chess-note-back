@@ -10,16 +10,14 @@ import {
 import { MemberService } from 'src/member/member.service';
 import { QuizEntity } from './quiz.entity';
 import {
-  GetListQuizInputType,
+  getQuizListInputType,
   CreateQuizInputType,
-  GetFocusListQuizInputType,
   GetQuizByIdInputType,
-  KindGetFocusListQuiz,
   UpdateQuizInputType,
-  GetDictListQuizInputType,
+  GetQuizListDictInputType,
 } from './quiz.input-type';
 import { QuizService } from './quiz.service';
-import { DictListQuizType, QuizType } from './quiz.type';
+import { QuizListDictType, QuizType } from './quiz.type';
 
 @Resolver((of) => QuizType)
 export class QuizResolver {
@@ -30,10 +28,10 @@ export class QuizResolver {
 
   // Query
   @Query((returns) => [QuizType])
-  getListQuiz(
-    @Args('getListQuizInputType') getListQuizInputType: GetListQuizInputType,
+  getQuizList(
+    @Args('getQuizListInputType') getQuizListInputType: getQuizListInputType,
   ) {
-    return this.quizService.getListQuiz(getListQuizInputType);
+    return this.quizService.getQuizList(getQuizListInputType);
   }
 
   @Query((returns) => QuizType)
@@ -43,49 +41,20 @@ export class QuizResolver {
     return this.quizService.getQuizById(getQuizByIdInputType);
   }
 
-  @Query((returns) => DictListQuizType)
-  async getDictListQuiz(
-    @Args('getDictListQuizInputType')
-    getDictListQuizInputType: GetDictListQuizInputType,
+  @Query((returns) => QuizListDictType)
+  async getQuizListDict(
+    @Args('getQuizListDictInputType')
+    getQuizListDictInputType: GetQuizListDictInputType,
   ) {
-    const { userId } = getDictListQuizInputType;
+    const { userId } = getQuizListDictInputType;
 
-    const publicQuizList = await this.quizService.getListQuiz({});
-    const myQuizList = await this.quizService.getListQuiz({ userId });
+    const publicQuizList = await this.quizService.getQuizList({});
+    const myQuizList = await this.quizService.getQuizList({ userId });
 
     return {
       publicQuizList: publicQuizList || [],
       myQuizList: myQuizList || [],
     };
-  }
-
-  @Query((returns) => [QuizType])
-  async getFocusListQuiz(
-    @Args('getFocusListQuizInputType')
-    getFocusListQuizInputType: GetFocusListQuizInputType,
-  ) {
-    const { kind, userId } = getFocusListQuizInputType;
-    // 3가지 경우
-    // 1. 로그인 없이, 모든 퀴즈     'public-quiz'
-    // 2. 로그인 한채로, 모든 퀴즈 (자신의 퀴즈 푼 이력 이용)     'public-quiz-by-record'
-    // 3. 로그인 한채로, 내 퀴즈만 (자신의 퀴즈 푼 이력 이용)     'my-quiz-by-record'
-
-    if (kind === KindGetFocusListQuiz.myQuizByRecord) {
-      const member = await this.memberService.getMemberByuserId(userId);
-      const quizRecordListOfUser = member.quizRecordList;
-      return this.quizService.getFocusListQuiz({
-        kind,
-        quizRecordListOfUser,
-        userId,
-      });
-    } else if (kind === KindGetFocusListQuiz.publicQuizByRecord) {
-      const member = await this.memberService.getMemberByuserId(userId);
-      const quizRecordListOfUser = member.quizRecordList;
-      return this.quizService.getFocusListQuiz({ kind, quizRecordListOfUser });
-    } else {
-      // kind ===
-      return this.quizService.getFocusListQuiz({ kind });
-    }
   }
 
   // Mutation
@@ -97,6 +66,7 @@ export class QuizResolver {
     return this.quizService.createQuiz(createQuizInputType);
   }
 
+  @Mutation((returns) => QuizType)
   updateQuiz(
     @Args('updateQuizInputType') updateQuizInputType: UpdateQuizInputType,
   ) {

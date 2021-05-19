@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MemberEntity } from './member.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { CreateMemberInputType } from './member.input-type';
+import {
+  CreateMemberInputType,
+  UpdateMemberInputType,
+} from './member.input-type';
 
 @Injectable()
 export class MemberService {
@@ -15,7 +18,7 @@ export class MemberService {
   // Query
 
   // 해당 userId의 멤버가 없으면 그자리에서 생성
-  async getMemberByuserId(userId: string): Promise<MemberEntity> {
+  async getMemberByUserId(userId: string): Promise<MemberEntity> {
     try {
       const result = await this.memberRepository.findOne({ userId });
 
@@ -52,6 +55,35 @@ export class MemberService {
     try {
       const result = await this.memberRepository.save(member, {});
       return result;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+
+  async updateMember(
+    updateMemberInputType: UpdateMemberInputType,
+  ): Promise<MemberEntity> {
+    const { userId, quizRecordList } = updateMemberInputType;
+
+    try {
+      const memberToUpdate = await this.memberRepository.findOne({ userId });
+
+      if (memberToUpdate) {
+        const result = await this.memberRepository.save({
+          ...memberToUpdate,
+          quizRecordList,
+        });
+        return result;
+      } else {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'There is no member with that userId',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
     } catch (error) {
       console.log(error);
       return;
