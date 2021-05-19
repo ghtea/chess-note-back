@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   CreateMemberInputType,
+  GetMemberByUserInputType,
   UpdateMemberInputType,
 } from './member.input-type';
 
@@ -16,18 +17,32 @@ export class MemberService {
   ) {}
 
   // Query
+  async getMemberByUserId(userId: string): Promise<MemberEntity> {
+    return this.memberRepository.findOne({ userId });
+  }
 
   // 해당 userId의 멤버가 없으면 그자리에서 생성
-  async getMemberByUserId(userId: string): Promise<MemberEntity> {
+  async getMemberByUser(
+    getMemberByUserInputType: GetMemberByUserInputType,
+  ): Promise<MemberEntity> {
     try {
-      const result = await this.memberRepository.findOne({ userId });
+      const { userId, userName } = getMemberByUserInputType;
+      const foundMember = await this.memberRepository.findOne({ userId });
 
-      if (result) {
-        return result;
+      if (foundMember) {
+        // user 의 이름이 바뀌었었으면 업데이트
+        if (foundMember.userName !== userName) {
+          await this.memberRepository.save({
+            ...foundMember,
+            userName,
+          });
+        }
+        return foundMember;
       } else {
         const member = this.memberRepository.create({
           id: uuid(),
           userId,
+          userName,
           quizRecordList: [],
         });
 
@@ -44,11 +59,12 @@ export class MemberService {
   async createMember(
     createMemberInputType: CreateMemberInputType,
   ): Promise<MemberEntity> {
-    const { userId } = createMemberInputType;
+    const { userId, userName } = createMemberInputType;
 
     const member = this.memberRepository.create({
       id: uuid(),
       userId,
+      userName,
       quizRecordList: [],
     });
 
@@ -64,7 +80,7 @@ export class MemberService {
   async updateMember(
     updateMemberInputType: UpdateMemberInputType,
   ): Promise<MemberEntity> {
-    const { userId, quizRecordList } = updateMemberInputType;
+    const { userId, userName, quizRecordList } = updateMemberInputType;
 
     try {
       const memberToUpdate = await this.memberRepository.findOne({ userId });
@@ -72,6 +88,7 @@ export class MemberService {
       if (memberToUpdate) {
         const result = await this.memberRepository.save({
           ...memberToUpdate,
+          userName,
           quizRecordList,
         });
         return result;

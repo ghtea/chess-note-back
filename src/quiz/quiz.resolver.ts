@@ -5,9 +5,12 @@ import {
   Args,
   ResolveField,
   Parent,
+  Root,
 } from '@nestjs/graphql';
+import { MemberEntity } from 'src/member/member.entity';
 //import { stringify } from "node:querystring";
 import { MemberService } from 'src/member/member.service';
+import { Repository } from 'typeorm';
 import { QuizEntity } from './quiz.entity';
 import {
   getQuizListInputType,
@@ -23,7 +26,7 @@ import { QuizListDictType, QuizType } from './quiz.type';
 export class QuizResolver {
   constructor(
     private quizService: QuizService,
-    private memberService: MemberService,
+    private memberService: MemberService, // private memberRepository: Repository<MemberEntity>, this is not possible
   ) {}
 
   // Query
@@ -72,6 +75,12 @@ export class QuizResolver {
   ) {
     //console.log('hello')
     return this.quizService.updateQuiz(updateQuizInputType);
+  }
+
+  // Resolver
+  @ResolveField()
+  async authorName(@Parent() quiz: QuizEntity) {
+    return (await this.memberService.getMemberByUserId(quiz.authorId)).userName;
   }
 }
 

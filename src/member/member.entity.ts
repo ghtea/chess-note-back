@@ -14,5 +14,8 @@ export class MemberEntity {
   userId: string;
 
   @Column()
+  userName: string;
+
+  @Column()
   quizRecordList: QuizRecord[];
 }

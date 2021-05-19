@@ -24,7 +24,7 @@ export class QuizService {
     const { userId } = getQuizListInputType;
     let result: QuizEntity[] = [];
     if (userId) {
-      result = await this.quizRepository.find({ userId });
+      result = await this.quizRepository.find({ authorId: userId });
     } else {
       result = await this.quizRepository.find({ isPublic: true });
     }
@@ -41,7 +41,7 @@ export class QuizService {
 
     if (result.isPublic) {
       return result;
-    } else if (result.userId === userId) {
+    } else if (result.authorId === userId) {
       return result;
     } else {
       throw new HttpException(
@@ -65,7 +65,7 @@ export class QuizService {
       startingFen,
       correctSanSeriesList,
       markedSanSeriesList,
-      userId,
+      authorId,
       isPublic,
     } = createQuizInputType;
 
@@ -76,7 +76,7 @@ export class QuizService {
       startingFen,
       correctSanSeriesList,
       markedSanSeriesList,
-      userId,
+      authorId,
       isPublic,
       createdDate: Date.now(),
       updatedDate: Date.now(),
@@ -105,7 +105,7 @@ export class QuizService {
     } = updateQuizInputType;
 
     try {
-      const quizToUpdate = await this.quizRepository.findOne(id);
+      const quizToUpdate = await this.quizRepository.findOne({ id });
 
       if (quizToUpdate) {
         const result = await this.quizRepository.save({

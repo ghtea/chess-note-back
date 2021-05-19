@@ -35,7 +35,10 @@ export class QuizType {
   markedSanSeriesList: string[][];
 
   @Field()
-  userId: string;
+  authorId: string;
+
+  @Field() // resovlefield!
+  authorName: string;
 
   @Field()
   isPublic: boolean;

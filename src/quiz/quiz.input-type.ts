@@ -58,7 +58,7 @@ export class CreateQuizInputType {
   markedSanSeriesList: string[][];
 
   @Field()
-  userId: string;
+  authorId: string;
 
   @Field()
   isPublic: boolean;
@@ -84,8 +84,8 @@ export class UpdateQuizInputType {
   @Field((type) => [[String]])
   markedSanSeriesList: string[][];
 
-  // @Field()
-  // userId: string;
+  @Field()
+  authorId: string;
 
   @Field()
   isPublic: boolean;

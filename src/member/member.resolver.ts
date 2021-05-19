@@ -10,7 +10,7 @@ import { stringify } from 'node:querystring';
 import { MemberEntity } from './member.entity';
 import {
   CreateMemberInputType,
-  GetMemberByUserIdInputType,
+  GetMemberByUserInputType,
   UpdateMemberInputType,
 } from './member.input-type';
 import { MemberService } from './member.service';
@@ -23,17 +23,20 @@ export class MemberResolver {
   ) {}
 
   @Query((returns) => MemberType)
-  async getMemberByUserId(
-    @Args('getMemberByUserIdInputType')
-    getMemberByUserIdInputType: GetMemberByUserIdInputType,
+  async getMemberByUser(
+    @Args('getMemberByUserInputType')
+    getMemberByUserInputType: GetMemberByUserInputType,
   ) {
-    const { userId } = getMemberByUserIdInputType;
-    const member = await this.memberService.getMemberByUserId(userId);
+    const { userId, userName } = getMemberByUserInputType;
+    const member = await this.memberService.getMemberByUser({
+      userId,
+      userName,
+    });
 
     if (member) {
-      return this.memberService.getMemberByUserId(userId);
+      return this.memberService.getMemberByUser({ userId, userName });
     } else {
-      return this.memberService.createMember({ userId });
+      return this.memberService.createMember({ userId, userName });
     }
   }
 
@@ -50,13 +53,16 @@ export class MemberResolver {
   async updateMember(
     @Args('updateMemberInputType') updateMemberInputType: UpdateMemberInputType,
   ) {
-    const { userId } = updateMemberInputType;
-    const member = await this.memberService.getMemberByUserId(userId);
+    const { userId, userName } = updateMemberInputType;
+    const member = await this.memberService.getMemberByUser({
+      userId,
+      userName,
+    });
 
     if (member) {
       return this.memberService.updateMember(updateMemberInputType);
     } else {
-      return this.memberService.createMember({ userId });
+      return this.memberService.createMember({ userId, userName });
     }
   }
 }

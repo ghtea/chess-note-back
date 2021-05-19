@@ -30,7 +30,7 @@ export class QuizEntity {
   markedSanSeriesList: string[][];
 
   @Column()
-  userId: string;
+  authorId: string;
 
   @Column()
   isPublic: boolean;

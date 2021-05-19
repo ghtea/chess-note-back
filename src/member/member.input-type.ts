@@ -15,9 +15,12 @@ export class QuizRecordInputType {
 }
 
 @InputType()
-export class GetMemberByUserIdInputType {
+export class GetMemberByUserInputType {
   @Field()
   userId: string;
+
+  @Field()
+  userName: string;
 }
 
 // @InputType()
@@ -29,12 +32,18 @@ export class GetMemberByUserIdInputType {
 export class CreateMemberInputType {
   @Field()
   userId: string;
+
+  @Field()
+  userName: string;
 }
 
 @InputType()
 export class UpdateMemberInputType {
   @Field(() => String)
   userId: string;
+
+  @Field(() => String)
+  userName: string;
 
   @Field(() => [QuizRecordInputType])
   quizRecordList: QuizRecordInputType[];

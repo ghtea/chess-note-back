@@ -23,6 +23,9 @@ export class MemberType {
   @Field()
   userId: string;
 
+  @Field()
+  userName: string;
+
   @Field((type) => [QuizRecordType])
   quizRecordList: QuizRecordType[];
 }
