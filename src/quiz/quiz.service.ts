@@ -5,9 +5,11 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   CreateQuizInputType,
-  getQuizListInputType,
+  GetQuizListInputType,
   GetQuizByIdInputType,
   UpdateQuizInputType,
+  DeleteQuizInputType,
+  LikeDislikeQuizInputType,
 } from './quiz.input-type';
 
 @Injectable()
@@ -19,17 +21,41 @@ export class QuizService {
 
   // Query
   async getQuizList(
-    getQuizListInputType: getQuizListInputType,
+    getQuizListInput: GetQuizListInputType,
   ): Promise<QuizEntity[]> {
-    const { userId } = getQuizListInputType;
-    let result: QuizEntity[] = [];
-    if (userId) {
-      result = await this.quizRepository.find({ authorId: userId });
-    } else {
-      result = await this.quizRepository.find({ isPublic: true });
-    }
+    const { userId } = getQuizListInput;
+    let entireQuizList: QuizEntity[] = [];
+    try {
+      entireQuizList = await this.quizRepository.find({ isPublic: true });
 
-    return result;
+      if (userId) {
+        const myQuizList = await this.quizRepository.find({ authorId: userId });
+        entireQuizList = entireQuizList.concat(myQuizList);
+      }
+
+      // 중복 제거
+      const quizIdListWithoutDuplicate: string[] = [];
+      entireQuizList = entireQuizList.filter((e) => {
+        if (quizIdListWithoutDuplicate.includes(e.id)) {
+          return false;
+        } else {
+          quizIdListWithoutDuplicate.push(e.id);
+          return true;
+        }
+      });
+      //console.log(entireQuizList)
+
+      return entireQuizList;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR, // 500
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async getQuizById(
@@ -37,20 +63,37 @@ export class QuizService {
   ): Promise<QuizEntity> {
     const { id, userId } = getQuizByIdInputType;
 
-    const result = await this.quizRepository.findOne({ id });
+    try {
+      const result = await this.quizRepository.findOne({ id });
 
-    if (result.isPublic) {
-      return result;
-    } else if (result.authorId === userId) {
-      return result;
-    } else {
+      if (!result) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'There is no quiz with that id',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      } else if (!result.isPublic && result.authorId !== userId) {
+        throw new HttpException(
+          {
+            status: HttpStatus.FORBIDDEN,
+            error:
+              'This quiz is not public and the user is not owner of this quiz',
+          },
+          HttpStatus.FORBIDDEN,
+        );
+      } else {
+        return result;
+      }
+    } catch (error) {
+      console.log(error);
       throw new HttpException(
         {
-          status: HttpStatus.FORBIDDEN,
-          error:
-            'This quiz is not public and the user is not owner of this quiz',
+          status: HttpStatus.INTERNAL_SERVER_ERROR, // 500
+          error: error,
         },
-        HttpStatus.FORBIDDEN,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -69,52 +112,45 @@ export class QuizService {
       isPublic,
     } = createQuizInputType;
 
-    const quiz = this.quizRepository.create({
-      id: uuid(),
-      name,
-      nextTurn,
-      startingFen,
-      correctSanSeriesList,
-      markedSanSeriesList,
-      authorId,
-      isPublic,
-      createdDate: Date.now(),
-      updatedDate: Date.now(),
-    });
-
     try {
+      const quiz: QuizEntity = this.quizRepository.create({
+        id: uuid(),
+        name,
+        nextTurn,
+        startingFen,
+        correctSanSeriesList,
+        markedSanSeriesList,
+        authorId,
+        isPublic,
+        memberReaction: {
+          likedMemberIdList: [],
+          dislikedMemberIdList: [],
+        },
+        createdDate: Date.now(),
+        updatedDate: Date.now(),
+      });
+
       const result = await this.quizRepository.save(quiz, {});
       return result;
     } catch (error) {
       console.log(error);
-      return;
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR, // 500
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  async updateQuiz(
-    updateQuizInputType: UpdateQuizInputType,
-  ): Promise<QuizEntity> {
-    const {
-      id,
-      name,
-      nextTurn,
-      startingFen,
-      correctSanSeriesList,
-      markedSanSeriesList,
-      isPublic,
-    } = updateQuizInputType;
+  async updateQuiz(updateQuizInput: UpdateQuizInputType): Promise<QuizEntity> {
+    const { userId, id } = updateQuizInput;
 
     try {
       const quizToUpdate = await this.quizRepository.findOne({ id });
 
-      if (quizToUpdate) {
-        const result = await this.quizRepository.save({
-          ...quizToUpdate,
-          ...updateQuizInputType,
-          updatedDate: Date.now(),
-        });
-        return result;
-      } else {
+      if (!quizToUpdate) {
         throw new HttpException(
           {
             status: HttpStatus.NOT_FOUND,
@@ -122,10 +158,135 @@ export class QuizService {
           },
           HttpStatus.NOT_FOUND,
         );
+      } else {
+        if (userId !== quizToUpdate.authorId) {
+          throw new HttpException(
+            {
+              status: HttpStatus.FORBIDDEN,
+              error: 'You are not allowed to update this quiz',
+            },
+            HttpStatus.FORBIDDEN,
+          );
+        } else {
+          const result = await this.quizRepository.save({
+            ...quizToUpdate,
+            ...updateQuizInput,
+            updatedDate: Date.now(),
+          });
+          return result;
+        }
       }
     } catch (error) {
       console.log(error);
-      return;
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR, // 500
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteQuiz(deleteQuizInput: DeleteQuizInputType): Promise<boolean> {
+    const { id, userId } = deleteQuizInput;
+
+    try {
+      const quizToDelete = await this.quizRepository.findOne({ id });
+
+      if (!quizToDelete) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'There is no quiz with that id',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      } else if (userId !== quizToDelete.authorId) {
+        throw new HttpException(
+          {
+            status: HttpStatus.FORBIDDEN,
+            error: 'You are not allowed to delete this quiz',
+          },
+          HttpStatus.FORBIDDEN,
+        );
+      } else {
+        await this.quizRepository.delete({ id });
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR, // 500
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async likeDislikeQuiz(
+    likeDislikeQuizInput: LikeDislikeQuizInputType,
+  ): Promise<QuizEntity> {
+    const { like, dislike, quizId, userId } = likeDislikeQuizInput;
+
+    try {
+      const quizToUpdate = await this.quizRepository.findOne({ id: quizId });
+
+      if (!quizToUpdate) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'There is no quiz with that id',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      } else {
+        if (userId !== quizToUpdate.authorId) {
+          throw new HttpException(
+            {
+              status: HttpStatus.FORBIDDEN,
+              error: 'You are not allowed to update this quiz',
+            },
+            HttpStatus.FORBIDDEN,
+          );
+        } else {
+          const newMemberReaction = { ...quizToUpdate.memberReaction };
+          newMemberReaction.likedMemberIdList = newMemberReaction.likedMemberIdList.filter(
+            (e) => e !== userId,
+          );
+          newMemberReaction.dislikedMemberIdList = newMemberReaction.dislikedMemberIdList.filter(
+            (e) => e !== userId,
+          );
+          if (like) {
+            newMemberReaction.likedMemberIdList = newMemberReaction.likedMemberIdList.concat(
+              [userId],
+            );
+          }
+          if (dislike) {
+            newMemberReaction.dislikedMemberIdList = newMemberReaction.dislikedMemberIdList.concat(
+              [userId],
+            );
+          }
+
+          const result = await this.quizRepository.save({
+            ...quizToUpdate,
+            memberReaction: newMemberReaction,
+            updatedDate: Date.now(),
+          });
+          return result;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR, // 500
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

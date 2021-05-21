@@ -7,20 +7,22 @@ import {
   Parent,
   Root,
 } from '@nestjs/graphql';
+import { isNullableType } from 'graphql';
 import { MemberEntity } from 'src/member/member.entity';
 //import { stringify } from "node:querystring";
 import { MemberService } from 'src/member/member.service';
 import { Repository } from 'typeorm';
 import { QuizEntity } from './quiz.entity';
 import {
-  getQuizListInputType,
+  GetQuizListInputType,
   CreateQuizInputType,
   GetQuizByIdInputType,
   UpdateQuizInputType,
-  GetQuizListDictInputType,
+  DeleteQuizInputType,
+  LikeDislikeQuizInputType,
 } from './quiz.input-type';
 import { QuizService } from './quiz.service';
-import { QuizListDictType, QuizType } from './quiz.type';
+import { QuizType } from './quiz.type';
 
 @Resolver((of) => QuizType)
 export class QuizResolver {
@@ -32,49 +34,42 @@ export class QuizResolver {
   // Query
   @Query((returns) => [QuizType])
   getQuizList(
-    @Args('getQuizListInputType') getQuizListInputType: getQuizListInputType,
+    @Args('getQuizListInput') getQuizListInput: GetQuizListInputType,
   ) {
-    return this.quizService.getQuizList(getQuizListInputType);
+    return this.quizService.getQuizList(getQuizListInput);
   }
 
   @Query((returns) => QuizType)
   getQuizById(
-    @Args('getQuizByIdInputType') getQuizByIdInputType: GetQuizByIdInputType,
+    @Args('getQuizByIdInput') getQuizByIdInput: GetQuizByIdInputType,
   ) {
-    return this.quizService.getQuizById(getQuizByIdInputType);
-  }
-
-  @Query((returns) => QuizListDictType)
-  async getQuizListDict(
-    @Args('getQuizListDictInputType')
-    getQuizListDictInputType: GetQuizListDictInputType,
-  ) {
-    const { userId } = getQuizListDictInputType;
-
-    const publicQuizList = await this.quizService.getQuizList({});
-    const myQuizList = await this.quizService.getQuizList({ userId });
-
-    return {
-      publicQuizList: publicQuizList || [],
-      myQuizList: myQuizList || [],
-    };
+    return this.quizService.getQuizById(getQuizByIdInput);
   }
 
   // Mutation
   @Mutation((returns) => QuizType)
-  createQuiz(
-    @Args('createQuizInputType') createQuizInputType: CreateQuizInputType,
-  ) {
+  createQuiz(@Args('createQuizInput') createQuizInput: CreateQuizInputType) {
     //console.log('hello')
-    return this.quizService.createQuiz(createQuizInputType);
+    return this.quizService.createQuiz(createQuizInput);
   }
 
   @Mutation((returns) => QuizType)
-  updateQuiz(
-    @Args('updateQuizInputType') updateQuizInputType: UpdateQuizInputType,
-  ) {
+  updateQuiz(@Args('updateQuizInput') updateQuizInput: UpdateQuizInputType) {
     //console.log('hello')
-    return this.quizService.updateQuiz(updateQuizInputType);
+    return this.quizService.updateQuiz(updateQuizInput);
+  }
+
+  @Mutation(() => Boolean)
+  deleteQuiz(@Args('deleteQuizInput') deleteQuizInput: DeleteQuizInputType) {
+    return this.quizService.deleteQuiz(deleteQuizInput);
+  }
+
+  @Mutation((returns) => QuizType)
+  likeDislikeQuiz(
+    @Args('likeDislikeQuizInput')
+    likeDislikeQuizInput: LikeDislikeQuizInputType,
+  ) {
+    return this.quizService.likeDislikeQuiz(likeDislikeQuizInput);
   }
 
   // Resolver
@@ -83,9 +78,3 @@ export class QuizResolver {
     return (await this.memberService.getMemberByUserId(quiz.authorId)).userName;
   }
 }
-
-// @ResolveField()
-//   // 해당 filed 요청할 때마다 이 함수 실행
-//   async students(@Parent() quiz: QuizEntity){
-//     return this.studentService.getManyStudents(quiz.students);
-//   }

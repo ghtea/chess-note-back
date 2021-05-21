@@ -7,10 +7,20 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { MinLength, IsDateString, IsUUID } from 'class-validator';
+import { MemberReaction } from './quiz.entity';
 // import { QuizRecordInputType } from 'src/member/member.input-type';
 
 @InputType()
-export class getQuizListInputType {
+export class MemberReactionInputType {
+  @Field(() => [String])
+  likedMemberIdList: string[];
+
+  @Field(() => [String])
+  dislikedMemberIdList: string[];
+}
+
+@InputType()
+export class GetQuizListInputType {
   @Field({ nullable: true })
   userId?: string;
 }
@@ -20,12 +30,6 @@ export class GetQuizByIdInputType {
   @Field()
   id: string;
 
-  @Field({ nullable: true })
-  userId?: string;
-}
-
-@InputType()
-export class GetQuizListDictInputType {
   @Field({ nullable: true })
   userId?: string;
 }
@@ -66,6 +70,9 @@ export class CreateQuizInputType {
 
 @InputType()
 export class UpdateQuizInputType {
+  @Field()
+  userId: string; // authorId 은 애초에 퀴즈에 저장되어있던거고 userId 는 앱 상의 사용자
+
   @Field((type) => ID)
   id: string;
 
@@ -89,26 +96,31 @@ export class UpdateQuizInputType {
 
   @Field()
   isPublic: boolean;
+
+  @Field((type) => MemberReactionInputType)
+  memberReaction: MemberReactionInputType;
 }
 
-// @Field(type=>[MemoInputType])
-// listMemo: Memo[];
+@InputType()
+export class DeleteQuizInputType {
+  @Field((type) => ID)
+  id: string;
 
-// @IsUUID("4", {each:true})
-// @Field(()=>[ID], { defaultValue: [] })
-// students: string[];
+  @Field()
+  userId: string;
+}
 
-// @IsUUID("4", {each:true})
-// @Field(()=>[ID], { defaultValue: [] })
-// students: string[];
+@InputType()
+export class LikeDislikeQuizInputType {
+  @Field((type) => ID)
+  quizId: string;
 
-// @InputType()
-// export class AssignStudentsToQuizInputType {
-//   @IsUUID()
-//   @Field(type=>ID)
-//   lessonId: string;
+  @Field()
+  userId: string;
 
-//   @IsUUID("4", {each:true})
-//   @Field(type=>[ID])
-//   studentIds: string[];
-// }
+  @Field()
+  like: boolean;
+
+  @Field()
+  dislike: boolean;
+}

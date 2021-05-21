@@ -1,9 +1,9 @@
 import { Entity, PrimaryColumn, Column, ObjectIdColumn } from 'typeorm';
 
-// export type Memo = {
-//   seriesSan: string[];
-//   kind: string;
-// }
+export type MemberReaction = {
+  likedMemberIdList: string[];
+  dislikedMemberIdList: string[];
+};
 
 @Entity()
 export class QuizEntity {
@@ -34,6 +34,9 @@ export class QuizEntity {
 
   @Column()
   isPublic: boolean;
+
+  @Column()
+  memberReaction: MemberReaction;
 
   @Column()
   createdDate: number;
