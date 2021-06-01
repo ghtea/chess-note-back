@@ -1,5 +1,10 @@
 import { Entity, PrimaryColumn, Column, ObjectIdColumn } from 'typeorm';
 
+export type MemberReaction = {
+  likedMemberIdList: string[];
+  dislikedMemberIdList: string[];
+};
+
 @Entity()
 export class OpeningEntity {
   @ObjectIdColumn()
@@ -15,13 +20,19 @@ export class OpeningEntity {
   side: 'white' | 'black';
 
   @Column()
-  tree: string;
+  correctSanSeriesList: string[][];
 
   @Column()
-  userId: string;
+  markedSanSeriesList: string[][];
+
+  @Column()
+  authorId: string;
 
   @Column()
   isPublic: boolean;
+
+  @Column()
+  memberReaction: MemberReaction;
 
   @Column()
   createdDate: number;

@@ -1,9 +1,4 @@
 import { Field, ObjectType, ID, Union } from '@nestjs/graphql';
-import { MemberReaction } from './quiz.entity';
-//import { Memo } from "./quiz.entity";
-
-// Union Media = Book | Movie
-// 어떻게 하는지 모르겠다
 
 @ObjectType('MemberReaction')
 export class MemberReactionType {
@@ -51,13 +46,4 @@ export class QuizType {
 
   @Field()
   updatedDate: number;
-}
-
-@ObjectType('QuizListDict')
-export class QuizListDictType {
-  @Field((type) => [QuizType])
-  publicQuizList: QuizType[];
-
-  @Field((type) => [QuizType])
-  myQuizList: QuizType[];
 }

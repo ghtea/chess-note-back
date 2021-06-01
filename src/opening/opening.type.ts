@@ -1,5 +1,14 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 
+@ObjectType('MemberReaction')
+export class MemberReactionType {
+  @Field(() => [String])
+  likedMemberIdList: string[];
+
+  @Field(() => [String])
+  dislikedMemberIdList: string[];
+}
+
 @ObjectType('Opening')
 export class OpeningType {
   @Field((type) => ID)
@@ -11,14 +20,23 @@ export class OpeningType {
   @Field()
   side: 'white' | 'black';
 
-  @Field()
-  tree: string;
+  @Field((type) => [[String]])
+  correctSanSeriesList: string[][];
+
+  @Field((type) => [[String]])
+  markedSanSeriesList: string[][];
 
   @Field()
-  userId: string;
+  authorId: string;
+
+  @Field() // resovlefield!
+  authorName: string;
 
   @Field()
   isPublic: boolean;
+
+  @Field()
+  memberReaction: MemberReactionType;
 
   @Field()
   createdDate: number;
